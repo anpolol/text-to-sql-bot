@@ -17,7 +17,7 @@ BOT_TOKEN=ваш_токен
 ```bash
 docker compose up -d --build
 ```
-  
+   
 **3. Или без Docker**
 ```bash
 python -m venv .venv
