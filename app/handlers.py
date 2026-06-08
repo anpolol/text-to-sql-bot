@@ -1,12 +1,19 @@
+import os
+
 from telegram import Update
 from telegram import ReplyKeyboardMarkup, KeyboardButton
 
 from telegram.ext import ContextTypes
 from app.LangGraph import react_graph
 
+ALLOWED_USER_ID = int(os.environ["ALLOWED_USER_ID"])
 
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.message.from_user.id != ALLOWED_USER_ID:
+        await update.message.reply_text("Нет доступа.")
+        return
+
     user_text = update.message.text
     KEYBOARD = ReplyKeyboardMarkup(
     [
