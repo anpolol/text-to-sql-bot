@@ -26,10 +26,11 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if not db:
             await update.message.reply_text("Привет! Выберите в меню к какой базе вы хотите обратиться?", reply_markup=KEYBOARD)
         else:
-            answer  = react_graph.invoke({
+            result  = react_graph.invoke({
             "database": db,
             "user_input": user_text,
             "database_schema": "",
             "messages": []
             })
+            answer = result["messages"][-1].content
             await update.message.reply_text(answer, reply_markup=KEYBOARD)            
