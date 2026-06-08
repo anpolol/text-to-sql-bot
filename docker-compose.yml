@@ -3,3 +3,6 @@ services:
     build: .
     env_file: .env
     restart: unless-stopped
+    volumes:
+      - /var/lib/docker/volumes/analyse-dreams-bot_bot_data/_data:/app/data/dreams
+      - ~/projects/cycle-tracking/data:/app/data/kali

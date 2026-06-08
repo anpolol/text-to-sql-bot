@@ -1,5 +1,11 @@
 # text-to-sql-bot
 
+# POLINA: todo
+- uv instead of pip compile
+- запрет на изменение базы только read only 
+- подкрутить langfuse 
+
+
 Telegram-бот на Python.
 
 ## Локальный запуск
