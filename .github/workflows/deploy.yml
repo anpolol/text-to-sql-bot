@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
 
+env:
+  APP_DIR: ~/projects/text-to-sql-bot
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -16,7 +19,6 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            cd ~/text-to-sql-bot
+            cd ${{ env.APP_DIR }}
             git pull origin main
-            echo "BOT_TOKEN=${{ secrets.BOT_TOKEN }}" > .env
             docker compose up -d --build
