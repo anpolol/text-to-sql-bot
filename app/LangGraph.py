@@ -123,7 +123,7 @@ These schemas of all tables in this database: {db_schema}\n
 Here is a descriprion of the tool-sql-executer \n {textual_description_of_tool}\n
 You should execute the user query with your tool passing argument of sql query
 then answer using beautiful formatting of the output of the tool please
-
+ Если ты не понял, уточни у юзера без вызова тулы что он хочет видеть, используй историю диалога
 """
     sys_msg = SystemMessage(content=systemprompt)
 
