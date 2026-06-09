@@ -39,7 +39,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if not db:
             await update.message.reply_text("Привет! Выберите в меню к какой базе вы хотите обратиться?", reply_markup=KEYBOARD)
         else:
-            history = context.user_data.get("history", [])
+            history = context.user_data.get("history", [])[-50:]
             result  = react_graph.invoke({
             "database": db,
             "user_input": user_text,
@@ -51,5 +51,5 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             limit = 4096
             #for i in range(0, len(answer), limit):
                 #await update.message.reply_text(answer[i:i+limit], reply_markup=KEYBOARD)            
-            context.user_data["history"] = result["messages"]
+            context.user_data["history"] = result["messages"][:]
             await update.message.reply_text(answer[:limit], reply_markup=KEYBOARD)            

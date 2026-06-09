@@ -63,7 +63,7 @@ tools = [
     db_query
     ]
 
-llm = ChatOpenAI(model="gpt-4o")
+llm = ChatOpenAI(model="gpt-4o", max_tokens=1500)
 llm_with_tools = llm.bind_tools(tools, parallel_tool_calls=False)
 
 
