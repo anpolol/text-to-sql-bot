@@ -5,6 +5,7 @@ from telegram import ReplyKeyboardMarkup, KeyboardButton
 
 from telegram.ext import ContextTypes
 from app.LangGraph import react_graph
+from langchain_core.messages import HumanMessage
 from langfuse.langchain import CallbackHandler
 
 ALLOWED_USER_ID = int(os.environ["ALLOWED_USER_ID"])
@@ -39,7 +40,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if not db:
             await update.message.reply_text("Привет! Выберите в меню к какой базе вы хотите обратиться?", reply_markup=KEYBOARD)
         else:
-            history = context.user_data.get("history", [])[-50:]
+            history = context.user_data.get("history", [])[-50:] + [HumanMessage(content=user_text)]
             result  = react_graph.invoke({
             "database": db,
             "user_input": user_text,
