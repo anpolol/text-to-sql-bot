@@ -1,0 +1,16 @@
+[project]
+name = "text-to-sql-bot"
+version = "0.1.0"
+requires-python = ">=3.13"
+dependencies = [
+    "python-telegram-bot==21.10",
+    "python-dotenv==1.0.1",
+    "typing-extensions",
+    "langgraph",
+    "langchain-openai",
+    "langchain-core",
+    "sqlalchemy",
+    "ipython",
+    "langfuse",
+    "langchain",
+]

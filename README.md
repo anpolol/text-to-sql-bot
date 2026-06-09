@@ -1,10 +1,10 @@
 # text-to-sql-bot
 
 # POLINA: todo
-- uv instead of pip compile
-- запрет на изменение базы только read only защиты от drop table
++ uv instead of pip compile
++ запрет на изменение базы только read only защиты от drop table
 - граф пеерписать добавить переспрос доспрос юзера 
-- добавить на /start всегда переспрос какую базу хотите 
++ добавить на /start всегда переспрос какую базу хотите 
 
 
 Telegram-бот на Python.
@@ -27,10 +27,13 @@ docker compose up -d --build
    
 **3. Или без Docker**
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-python main.py
+uv sync
+uv run python main.py
+```
+
+**Обновить зависимости** (после изменений в `pyproject.toml`):
+```bash
+uv lock
 ```
 
 ## Деплой

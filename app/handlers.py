@@ -30,6 +30,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif user_text == 'analyse dreams':
         context.user_data["database"] = "analyse dreams"
         await update.message.reply_text("Что вы хотите узнать из базы analyse dreams?")
+    elif user_text == "/start":
+        await update.message.reply_text("Привет! Выберите в меню к какой базе вы хотите обратиться?", reply_markup=KEYBOARD)
     else:
         db = context.user_data.get("database")
         if not db:
