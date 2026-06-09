@@ -26,9 +26,11 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if user_text == 'kali':
         context.user_data["database"] = "kali"
+        context.user_data["history"] = []   
         await update.message.reply_text("Что вы хотите узнать из базы kali?")
     elif user_text == 'analyse dreams':
         context.user_data["database"] = "analyse dreams"
+        context.user_data["history"] = []   
         await update.message.reply_text("Что вы хотите узнать из базы analyse dreams?")
     elif user_text == "/start":
         await update.message.reply_text("Привет! Выберите в меню к какой базе вы хотите обратиться?", reply_markup=KEYBOARD)
@@ -37,15 +39,17 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if not db:
             await update.message.reply_text("Привет! Выберите в меню к какой базе вы хотите обратиться?", reply_markup=KEYBOARD)
         else:
+            history = context.user_data.get("history", [])
             result  = react_graph.invoke({
             "database": db,
             "user_input": user_text,
             "database_schema": "",
-            "messages": []
+            "messages": history
             },
             config={"callbacks": [langfuse_handler]})
             answer = result["messages"][-1].content
             limit = 4096
             #for i in range(0, len(answer), limit):
                 #await update.message.reply_text(answer[i:i+limit], reply_markup=KEYBOARD)            
+            context.user_data["history"] = result["messages"]
             await update.message.reply_text(answer[:limit], reply_markup=KEYBOARD)            
