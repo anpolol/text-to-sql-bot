@@ -34,10 +34,10 @@ def db_query(sql_query: str, database_name: str) -> list:
         A list of rows with answer
 """
     if database_name == 'kali':
-        database_url = "sqlite:////app/data/kali/app.db"
+        database_url = "sqlite:////app/data/kali/app.db?mode=ro&uri=true"
     else:
-        database_url = "sqlite:////app/data/dreams/app.db"
-    connect_args = {"check_same_thread": False, "timeout": 30} if database_url.startswith("sqlite") else {}
+        database_url = "sqlite:////app/data/dreams/app.db?mode=ro&uri=true"
+    connect_args = {"check_same_thread": False, "timeout": 30, "uri": True } if database_url.startswith("sqlite") else {}
     engine = create_engine(database_url, connect_args=connect_args, future=True)
     SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False, future=True)
     session = SessionLocal()
@@ -68,11 +68,11 @@ def get_schema_db(state: State):
     db_name = state["database"]
     
     if db_name == 'kali':
-        database_url = "sqlite:////app/data/kali/app.db"
+        database_url = "sqlite:////app/data/kali/app.db?mode=ro&uri=true"
     else:
-        database_url = "sqlite:////app/data/dreams/app.db"
+        database_url = "sqlite:////app/data/dreams/app.db?mode=ro&uri=true"
 
-    connect_args = {"check_same_thread": False, "timeout": 30}
+    connect_args = {"check_same_thread": False, "timeout": 30, "uri": True }
     engine = create_engine(database_url, connect_args=connect_args, future=True)
 
     with engine.connect() as conn:
