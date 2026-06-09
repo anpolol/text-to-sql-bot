@@ -1,6 +1,7 @@
 # text-to-sql-bot
 
 # POLINA: todo
+- перенести в langfuse  промпты
 + uv instead of pip compile
 + запрет на изменение базы только read only защиты от drop table
 - граф пеерписать добавить переспрос доспрос юзера 

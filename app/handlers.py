@@ -51,5 +51,5 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             limit = 4096
             #for i in range(0, len(answer), limit):
                 #await update.message.reply_text(answer[i:i+limit], reply_markup=KEYBOARD)            
-            context.user_data["history"] = result["messages"][:]
+            context.user_data["history"] = result["messages"]
             await update.message.reply_text(answer[:limit], reply_markup=KEYBOARD)            
