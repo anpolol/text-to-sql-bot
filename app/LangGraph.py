@@ -8,6 +8,7 @@ from langfuse.langchain import CallbackHandler
 
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy import event
 
 from langgraph.prebuilt import ToolNode, tools_condition
 from IPython.display import Image, display
@@ -34,11 +35,17 @@ def db_query(sql_query: str, database_name: str) -> list:
         A list of rows with answer
 """
     if database_name == 'kali':
-        database_url = "sqlite:////app/data/kali/app.db?mode=ro&uri=true"
+        database_url = "sqlite:////app/data/kali/app.db"
     else:
-        database_url = "sqlite:////app/data/dreams/app.db?mode=ro&uri=true"
-    connect_args = {"check_same_thread": False, "timeout": 30, "uri": True } if database_url.startswith("sqlite") else {}
+        database_url = "sqlite:////app/data/dreams/app.db"
+    connect_args = {"check_same_thread": False, "timeout": 30} if database_url.startswith("sqlite") else {}
     engine = create_engine(database_url, connect_args=connect_args, future=True)
+    
+    @event.listens_for(engine, "connect")
+    def set_readonly(dbapi_conn, _):
+        dbapi_conn.execute("PRAGMA query_only = ON")
+
+
     SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False, future=True)
     session = SessionLocal()
     try:
@@ -68,11 +75,11 @@ def get_schema_db(state: State):
     db_name = state["database"]
     
     if db_name == 'kali':
-        database_url = "sqlite:////app/data/kali/app.db?mode=ro&uri=true"
+        database_url = "sqlite:////app/data/kali/app.db"
     else:
-        database_url = "sqlite:////app/data/dreams/app.db?mode=ro&uri=true"
+        database_url = "sqlite:////app/data/dreams/app.db"
 
-    connect_args = {"check_same_thread": False, "timeout": 30, "uri": True }
+    connect_args = {"check_same_thread": False, "timeout": 30}
     engine = create_engine(database_url, connect_args=connect_args, future=True)
 
     with engine.connect() as conn:
