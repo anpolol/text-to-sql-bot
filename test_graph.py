@@ -2,6 +2,10 @@ from unittest.mock import patch, MagicMock
 import os
 
 os.environ.setdefault("OPENAI_API_KEY", "sk-fake-key-for-testing")
+os.environ.setdefault("LANGFUSE_PUBLIC_KEY", "fake-langfuse-public-key")
+os.environ.setdefault("LANGFUSE_SECRET_KEY", "fake-langfuse-secret-key")
+os.environ.setdefault("LANGFUSE_HOST", "http://localhost")
+os.environ.setdefault("ALLOWED_USER_ID", "0")
 
 from langchain_core.messages import AIMessage
 from app.LangGraph import react_graph

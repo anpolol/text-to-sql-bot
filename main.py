@@ -1,8 +1,11 @@
 import logging
 from telegram.ext import ApplicationBuilder, MessageHandler, filters
+import os
 
-from config import BOT_TOKEN
+BOT_TOKEN = os.environ["BOT_TOKEN"]
+
 from app.handlers import handle_message
+
 
 logging.basicConfig(
     level=logging.INFO,

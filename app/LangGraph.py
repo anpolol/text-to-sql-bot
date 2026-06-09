@@ -4,6 +4,7 @@ from langgraph.graph.message import add_messages
 from langchain_core.messages import AnyMessage, SystemMessage, HumanMessage
 from langgraph.graph import START, StateGraph
 from langchain_openai import ChatOpenAI
+from langfuse.langchain import CallbackHandler
 
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
@@ -17,6 +18,7 @@ class State(TypedDict):
     database_schema: str
     messages: Annotated[list[AnyMessage], add_messages]
 
+langfuse_handler = CallbackHandler()
 
 ############ TOOLS
 

@@ -6,3 +6,5 @@ langchain_openai
 langchain_core
 sqlalchemy
 ipython
+langfuse
+langchain

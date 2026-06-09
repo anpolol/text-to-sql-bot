@@ -5,9 +5,11 @@ from telegram import ReplyKeyboardMarkup, KeyboardButton
 
 from telegram.ext import ContextTypes
 from app.LangGraph import react_graph
+from langfuse.langchain import CallbackHandler
 
 ALLOWED_USER_ID = int(os.environ["ALLOWED_USER_ID"])
 
+langfuse_handler = CallbackHandler()
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message.from_user.id != ALLOWED_USER_ID:
@@ -38,7 +40,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "user_input": user_text,
             "database_schema": "",
             "messages": []
-            })
+            },
+            config={"callbacks": [langfuse_handler]})
             answer = result["messages"][-1].content
             limit = 4096
             #for i in range(0, len(answer), limit):
