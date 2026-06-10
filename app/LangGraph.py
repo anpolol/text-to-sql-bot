@@ -5,6 +5,11 @@ from langchain_core.messages import AnyMessage, SystemMessage, HumanMessage
 from langgraph.graph import START, StateGraph
 from langchain_openai import ChatOpenAI
 from langfuse.langchain import CallbackHandler
+from langfuse import Langfuse
+import os
+
+langfuse = Langfuse()
+PROMPT_NAME = os.environ["PROMPT_NAME"]
 
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
@@ -63,8 +68,6 @@ tools = [
     db_query
     ]
 
-llm = ChatOpenAI(model="gpt-4o", max_tokens=1500)
-llm_with_tools = llm.bind_tools(tools, parallel_tool_calls=False)
 
 
 ########### NODES
@@ -99,33 +102,18 @@ def get_schema_db(state: State):
             }
 
 def assistant(state: State):
-    # System message
+    prompt = langfuse.get_prompt(PROMPT_NAME)
+    llm = ChatOpenAI(model=prompt.config["model"], max_tokens=prompt.config["max_tokens"])
+    llm_with_tools = llm.bind_tools(tools, parallel_tool_calls=False)
+
     user_query = state["user_input"]
     db_schema = state["database_schema"]
     database_name = state["database"]
 
-    textual_description_of_tool="""
-def db_query(sql_query: str, database_name: str) -> list
-    Execute query in SQL syntac from sqlite database called database_name.
-
-    Args:
-        sql_query: SQL query
-        database_name: name of database from which to execute
-
-    Returns:
-        A list of rows with answer
-"""
-    systemprompt = f"""
-You are an analytic. You can make SQL queries to databases from human language query of your manager:
-This is user query in human language: {user_query}
-Here is the name of the database you want to make query: {database_name}\n
-These schemas of all tables in this database: {db_schema}\n
-Here is a descriprion of the tool-sql-executer \n {textual_description_of_tool}\n
-You should execute the user query with your tool passing argument of sql query
-then answer using beautiful formatting of the output of the tool please
- Если ты не понял, уточни у юзера без вызова тулы что он хочет видеть, используй историю диалога
-"""
-    sys_msg = SystemMessage(content=systemprompt)
+    system_message = prompt.compile(user_query=user_query,
+                                    database_name=database_name,
+                                    db_schema=db_schema)
+    sys_msg = SystemMessage(content=system_message)
 
     return {
         "messages": [llm_with_tools.invoke([sys_msg] + state["messages"])],

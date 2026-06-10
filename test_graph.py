@@ -6,6 +6,7 @@ os.environ.setdefault("LANGFUSE_PUBLIC_KEY", "fake-langfuse-public-key")
 os.environ.setdefault("LANGFUSE_SECRET_KEY", "fake-langfuse-secret-key")
 os.environ.setdefault("LANGFUSE_HOST", "http://localhost")
 os.environ.setdefault("ALLOWED_USER_ID", "0")
+os.environ.setdefault("PROMPT_NAME", "text-to-sql-bot-v1")
 
 from langchain_core.messages import AIMessage
 from app.LangGraph import react_graph
@@ -21,11 +22,20 @@ def test_graph_runs():
     mock_conn.execute.return_value.fetchall.return_value = [("users",)]
     mock_conn.execute.return_value.scalar.return_value = fake_schema
 
-    with patch("app.LangGraph.create_engine") as mock_engine, \
-         patch("app.LangGraph.llm_with_tools") as mock_llm:
+    mock_prompt = MagicMock()
+    mock_prompt.config = {"model": "gpt-4o", "max_tokens": 1500}
+    mock_prompt.compile.return_value = "fake system message"
 
+    mock_llm_instance = MagicMock()
+    mock_llm_instance.bind_tools.return_value.invoke.return_value = fake_llm_response
+
+    with patch("app.LangGraph.create_engine") as mock_engine, \
+         patch("app.LangGraph.langfuse") as mock_langfuse, \
+         patch("app.LangGraph.ChatOpenAI") as mock_chat_openai:
+
+        mock_langfuse.get_prompt.return_value = mock_prompt
+        mock_chat_openai.return_value = mock_llm_instance
         mock_engine.return_value.connect.return_value = mock_conn
-        mock_llm.invoke.return_value = fake_llm_response
 
         result = react_graph.invoke({
             "database": "kali",
